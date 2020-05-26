@@ -1,12 +1,12 @@
 function [ PPM_NO ] = NOX( T_NO,P_atm,lambda,P_NO,T_BDC,P_BDC,P_EXH)
-R_u=8315;	%Universal Gas Constant
-psi=3.773;	%Molar N/O ratio
-y=18/8;	%Molar H/C ratio (Using Iso-Octane) 
-epsilon=4/(4+y);	%y is the molar H/C ratio
+R_u=8315;           % Univerzální plynová konstanta
+psi=3.773;          % Molární poměr N/O
+y=18/8;             % Molární pomer H/C ratio (Using Iso-Octane) 
+epsilon=4/(4+y);	% y je molární poměr H/C
 
-%Calculate Equilibrium Constant At Given Temperature (Water Gas Shift) 
+%Vypočítat rovnovážnou konstantu při dané teplotě (posun vodního plynu) 
 K_wgs=exp(2.743-1.761*10^3/T_NO-1.611*10^6/(T_NO^2)+.2803*10^9/(T_NO^3));
-%Atom Balance Based On Excess Air Coefficient 
+%Atomová rovnováha založená na nadměrném množství vzduchu 
 if 1/lambda < 1
 n_CO2=epsilon*(1/lambda); 
 n_H2O=2*(1-epsilon)*(1/lambda);
@@ -32,9 +32,7 @@ n_N2=psi;
 n_b = (2-epsilon)*(1/lambda)+psi;
 end
 
-% 	
-
-%Calculate Molar Fractions Of Each Constituent Element  
+% Vypočt molární zlomky každého prvku
 x_CO2=n_CO2/n_b;		
 x_H2O=n_H2O/n_b;	
 x_CO=n_CO/n_b;	
@@ -61,21 +59,19 @@ end
  
 x_O2=(ALPHA/(2*n_prod))*(x_CO2*((1-ALPHA)/n_prod));
 %x_CO=x_CO+(ALPHA/n_prod);
- 
 
-%Calculate Equilibrium Concentrations 
+% Vypočítat rovnovážné koncentrace
 X_O2_e=x_O2*P_BDC/(R_u*T_NO);
-% 	
 
-%Equilibrium Constant For O2 to Oxygen Reaction
+% Rovnovážná konstanta pro reakci O2 na kyslík
 Kp_7=3.6*10^3*exp(-31090/T_NO)*318.3; %318.3 converts atm^(1/2) to pa^(1/2) 
 x_O_e= (Kp_7*X_O2_e^(1/2))/((R_u*T_NO)^(1/2))/(P_BDC/(R_u*T_NO)); %kmol/m^3
-%The Forward Reaction Rate Constant (m^3/kmol-s) 
+% The Forward Reaction Rate Constant (m^3/kmol-s) 
 k_1f=1.82*10^11*exp(-38370/T_NO);
-%Calculate Change in NO Concentration as Function of Time 
+% Vypočítat změnu NO koncentrace jako funkci času 
 dNOdt=2*k_1f*x_O_e*x_N2_e*P_BDC/(R_u*T_NO);
-%Calculate residence time
+% Vypočítat dobu reakcí
 t_NO=(8*10^(-16)*T_NO*exp(58300/T_NO))/(P_NO/101325)^(1/2);
-%Calculate NO PPM
+% Výpočet NO PPM
 PPM_NO = dNOdt*t_NO*10^6; 
 end

@@ -1,11 +1,11 @@
 function [ HC ] = hydrocarbons( R_frac,AF_ratio_ac,B,P_peak,imep,C_r,V_d,N_cyl,T_w,N )
-%Offset Of Spark Plug From Central Axis of Cylinder
+% Ofset zapalovací svíčky od centrální osy válce
 d_splug = 0;
-%Calculate Crevice Volume
-h_crevice = (3/1000);   %Crevice Height (m)
-gap = (1.5/1000);       %Crevice Width
+% Vypočte objem štěrbinye
+h_crevice = (3/1000);   % Výška štěrbiny (m)
+gap = (1.5/1000);       % Šířka štěrbiny
 V_crevice = (pi/4)*B^2*h_crevice - (pi/4)*(B-2*gap)^2*h_crevice;
-%Calculate Unburned Fraction
+% Vypočítejte nespálenou frakci
 f_unburned = (1-R_frac);
 %Calculate Fuel Vapor
 f_vapor = 1/(1+(AF_ratio_ac/15.09)*14.7);
